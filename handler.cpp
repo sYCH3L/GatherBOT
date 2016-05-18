@@ -1,7 +1,6 @@
 ﻿#include "handler.h"
 #include <QStringList>
 #include <QSettings>
-#include <QCoreApplication>
 
 handler::handler(commands *cmd) : commands(cmd)
 {

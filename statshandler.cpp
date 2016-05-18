@@ -1,7 +1,7 @@
 ﻿#include "statshandler.h"
 #include <QSqlError>
 #include <QSqlRecord>
-#include <QCoreApplication>
+
 
 statshandler::statshandler()
 {
@@ -21,15 +21,6 @@ statshandler::statshandler()
     capt2_rdy = false;
     ztimer = new QTimer();
 
-    //maps << "de_nuke" << "de_inferno" << "de_dust2" << "de_cache";
-
-    /*
-Host: sql2.freemysqlhosting.net
-Database name: sql2107771
-Database user: sql2107771
-Database password: yM9!mW7!
-Port number: 3306
-*/
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("sql2.freemysqlhosting.net");
     db.setDatabaseName("sql2107771");
