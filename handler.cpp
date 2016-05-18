@@ -1,6 +1,7 @@
 ﻿#include "handler.h"
 #include <QStringList>
 #include <QSettings>
+#include <QCoreApplication>
 
 handler::handler(commands *cmd) : commands(cmd)
 {
@@ -12,7 +13,7 @@ handler::handler(commands *cmd) : commands(cmd)
     connect(_delayTimer, SIGNAL(timeout()), this, SLOT(ProceedProcess()));
 
 }
-void commands::Prepear(QString chl, QString bn, QString gn)
+void commands::Prepear(QString chl, QString bn, QString gn, QString ip, int port)
 {
 
     channel.append(chl);
@@ -20,11 +21,15 @@ void commands::Prepear(QString chl, QString bn, QString gn)
     gname.append(gn);
 
     // Connecting to server
-    _socket->connectToHost("irc.quakenet.org",6667);
+    _socket->connectToHost(ip,port);
     bool ok = _socket->isOpen();
     if(ok)
     {
         qDebug() << "IRC Connection Obtained";
+    }
+    else
+    {
+        exit(EXIT_FAILURE);
     }
 }
 

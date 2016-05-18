@@ -19,7 +19,7 @@ class commands : public QObject, statshandler
 public:
     commands(QObject *parent = 0 );
     virtual ~commands();
-    void Prepear(QString chl, QString bn, QString gn);
+    void Prepear(QString chl, QString bn, QString gn, QString ip, int port);
     int firstRun;
 
 signals:

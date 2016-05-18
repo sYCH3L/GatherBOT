@@ -1,6 +1,7 @@
 ﻿#include "statshandler.h"
 #include <QSqlError>
 #include <QSqlRecord>
+#include <QCoreApplication>
 
 statshandler::statshandler()
 {
@@ -36,8 +37,9 @@ Port number: 3306
     db.setPassword("yM9!mW7!");
     db.setPort(3306);
 
-    if (!db.open()) {
+    if (!db.open() && !db.isValid()) {
         qDebug() << db.lastError().text();
+        exit(EXIT_FAILURE);
     } else {
         qDebug("MySQL Connection was successful");
     }
@@ -97,12 +99,10 @@ Port number: 3306
 
     gamecounter = countG_q.value(0).toInt();
 
-    QString temp;
     selectMap_q.exec();
     while(selectMap_q.next())
     {
-        temp = selectMap_q.value(selectMap_q.record().indexOf("mapname")).toString();
-        maps.append(temp);
+        maps.append(selectMap_q.value(selectMap_q.record().indexOf("mapname")).toString());
     }
 
 }
