@@ -17,9 +17,7 @@ public:
     virtual ~statshandler();
     QSqlDatabase db;
 
-    QSqlQuery vouch_q, stats_q, lookup_q, lookup_qq, unvouch_q,
-    demote_q, promote_q,addg_q, checkGame_q,updateGame_q,gameList_q,serverList_q,checkID,updateID,closegame_q,
-    checkTeams_q,lastG_q,countG_q,setLast_q,selectMap_q,selectServer_q,updateServer_q;
+    QSqlQuery query;
 
     int lookup_rank, user_rank, pr_rank, rank, nrank, elo, wins, loses, sec, gamecounter, port;
 
