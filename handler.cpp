@@ -21,14 +21,11 @@ void commands::Prepear(QString chl, QString bn, QString gn, QString ip, int port
     // Connecting to server
     _socket->connectToHost(ip,port);
     bool ok = _socket->isOpen();
-    if(ok)
-    {
-        qDebug() << "IRC Connection Obtained";
-    }
-    else
+    if(!ok)
     {
         exit(EXIT_FAILURE);
     }
+    qDebug() << "IRC Connection Obtained";
 }
 
 

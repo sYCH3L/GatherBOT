@@ -82,18 +82,6 @@ void commands::commandHandler()
     {
             _socket->write((QString("JOIN ") += datalist[4] += QString(" \r\n")).toLatin1());
     }
-    if(datalist[3] == ":.giveauth")
-    {
-        if(giveAuth(userinfo[2],userinfo[0]))
-        {
-            _socket->write((QString("PRIVMSG ") += datalist[2] += QString(" : The authkey for you is %1 \r\n").arg(stringA)).toLatin1());
-
-        }
-        else
-        {
-            _socket->write((QString("PRIVMSG ") += datalist[2] += QString(" :Insufficient privileges!\r\n")).toLatin1());
-        }
-    }
     if(datalist[3] == ":.connect")
     {
         int a = datalist[4].toInt();

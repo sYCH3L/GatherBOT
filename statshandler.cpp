@@ -13,12 +13,14 @@ statshandler::statshandler()
     nrank = 0;
     rank = 0;
     gamecounter = 0;
+
     game_started = false;
     map_picked = false;
     players_picked = false;
     pick_stage = false;
     capt1_rdy = false;
     capt2_rdy = false;
+
     ztimer = new QTimer();
 
     db = QSqlDatabase::addDatabase("QMYSQL");
@@ -28,12 +30,12 @@ statshandler::statshandler()
     db.setPassword("yM9!mW7!");
     db.setPort(3306);
 
-    if (!db.open() && !db.isValid()) {
+    if (!db.open() && !db.isValid())
+    {
         qDebug() << db.lastError().text();
         exit(EXIT_FAILURE);
-    } else {
-        qDebug("MySQL Connection was successful");
     }
+    qDebug("MySQL Connection was successful");
 
     query = QSqlQuery(db);
 
@@ -95,6 +97,7 @@ bool statshandler::checkConnect(QString vauth, QString vname, int port, QString 
         {
             return true;
         }
+        return false;
     }
     return false;
 }
@@ -116,35 +119,6 @@ bool statshandler::checkSteamid(QString vauth, QString vname)
     query.bindValue(":name", vname);
     query.bindValue(":auth", vauth);
     query.exec();
-    return false;
-}
-
-QString statshandler::generator()
-{
-    QString s;
-    const char alphanum[] =
-            "0123456789"
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            "abcdefghijklmnopqrstuvwxyz";
-
-    for (int i = 0; i < 5; ++i) {
-        s += alphanum[rand() % (sizeof(alphanum) - 1)];
-    }
-    return s;
-}
-
-bool statshandler::giveAuth(QString vauth, QString vname)
-{
-    if(lookup(vname,vauth) && lookup_rank > 0)
-    {
-        stringA = generator();
-        query.prepare("UPDATE users SET authkey = :aux WHERE name = :name and auth = :auth");
-        query.bindValue(":aux",stringA);
-        query.bindValue(":name",vname);
-        query.bindValue(":auth",vauth);
-        query.exec();
-        return true;
-    }
     return false;
 }
 
