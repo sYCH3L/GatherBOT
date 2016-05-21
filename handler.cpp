@@ -8,7 +8,6 @@ handler::handler(commands *cmd) : commands(cmd)
     connect(_socket, SIGNAL(readyRead()), this, SLOT(NextStep()));
     connect(_socket, SIGNAL(connected()), this, SLOT(SendInfo()));
     connect(_timer, SIGNAL(timeout()), this, SLOT(SendInfo()));
-    connect(_queueTimer, SIGNAL(timeout()), this, SLOT(RunQueue()));
     connect(_delayTimer, SIGNAL(timeout()), this, SLOT(ProceedProcess()));
 
 }
@@ -77,17 +76,8 @@ void commands::SendInfo()
         break;
     }
 }
-void commands::RunQueue()
-{
-    if (_commandQueue->isEmpty())
-        return;
-
-    _socket->write(_commandQueue->dequeue());
-}
 
 void commands::ProceedProcess()
 {
     _bProcess = true;
-    _delayTimer->stop();
-    delete _delayTimer;
 }

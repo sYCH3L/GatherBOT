@@ -11,8 +11,6 @@
 #include <QThread>
 #include "statshandler.h"
 
-typedef QQueue<QByteArray> Command;
-
 class commands : public QObject, statshandler
 {
     Q_OBJECT
@@ -29,11 +27,8 @@ protected:
     QTcpSocket *_socket;
     QString *_string;
     QTimer* _timer;
-    QTimer* _queueTimer;
     QTimer* _delayTimer;
 private:
- // avoids processing on first connection for 10 seconds
-    Command* _commandQueue;
     int _lCount;
     bool _bProcess;
 
@@ -42,7 +37,6 @@ private slots:
     void SendInfo();
     void ProceedProcess();
     void ProcessContents();
-    void RunQueue();
     void randz();
 
 

@@ -55,6 +55,7 @@ statshandler::statshandler()
 }
 statshandler::~statshandler()
 {
+    delete ztimer;
     db.close();
 }
 

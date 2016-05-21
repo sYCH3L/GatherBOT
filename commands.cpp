@@ -7,9 +7,7 @@ commands::commands(QObject *parent) :
     _socket = new QTcpSocket(this);
     _string = new QString();
     _timer = new QTimer(this);
-    _queueTimer = new QTimer(this);
     _delayTimer = new QTimer(this);
-    _commandQueue = new Command();
     firstRun = 1;
 
     connect(ztimer, SIGNAL(timeout()), this, SLOT(randz()));
