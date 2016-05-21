@@ -8,6 +8,7 @@ class csserver
 {
 public:
     explicit csserver();
+    virtual ~csserver();
     QTcpSocket *_csocket;
     QString *_return;
     bool ServerConnect(int port, QString ip, QString rcon);

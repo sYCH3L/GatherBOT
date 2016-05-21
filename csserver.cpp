@@ -6,6 +6,12 @@ csserver::csserver()
     _csocket = new QTcpSocket();
     _return = new QString();
 }
+csserver::~csserver()
+{
+    delete _csocket;
+    delete _return;
+}
+
 bool csserver::ServerConnect(int port, QString ip,QString rcon)
 {
     _csocket->connectToHost(ip,port);
