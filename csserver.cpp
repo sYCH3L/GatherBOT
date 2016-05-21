@@ -17,7 +17,7 @@ bool csserver::ServerConnect(int port, QString ip,QString rcon)
     _csocket->connectToHost(ip,port);
     if(_csocket->waitForConnected(1000))
     {
-        _csocket->write(makePacket(3,rcon,true));
+        _csocket->write(makePacket(3,rcon));
         _csocket->waitForBytesWritten(100000);
         _csocket->waitForReadyRead(1000);
         if(_csocket->bytesAvailable() > 0)
@@ -38,59 +38,33 @@ bool csserver::ServerConnect(int port, QString ip,QString rcon)
 
 bool csserver::sendCommand(QString command)
 {
-    _csocket->write(makePacket(2,command,false));
+    _csocket->write(makePacket(2,command));
     _csocket->waitForBytesWritten(10000);
+
     if(_csocket->bytesAvailable() == 0)
     {
 
         return false;
     }
-    else
-    {
-        _return->clear();
-        _return->append(_csocket->readAll().toHex());
+    _return->clear();
+    _return->append(_csocket->readAll().toHex());
 
-        qDebug() << *_return;
-        return true;
-    }
+    qDebug() << *_return;
+    return true;
 }
 
-QByteArray csserver::makePacket(int type, QString command, bool rcon) // rewrite..
+QByteArray csserver::makePacket(int type, QString command)
 {
-    // Don't ever bother to ask, done with wireshark analyze
-    QByteArray temp;
-    QString a;
-    int c;
-    if(rcon)
-    {
-        c  = command.length() + 10 + QString("369098752").length();
-    }
-    else
-    {
-    c = command.length() + 9;
-    }
-    QString b;
-
-    temp.insert(0,c);
-    if(rcon)
-    {
-    temp.insert(4,2);
-    }
-    temp.insert(8,type);
+    int size = 13 + command.length() + 1;
+    QByteArray Packet;
+    Packet.resize(size);
+    Packet[0] = command.length() + 9;
+    Packet[4] = 0;
+    Packet[8] = type;
     for(int i = 0; i < command.length(); i++)
     {
-        b = command[i];
-        if(b == " ") { b = "X"; }
-        temp.insert(12+i,b);
+       Packet.insert(12+i,QString(command[i]));
     }
-    temp.append('\0');
-    if(rcon)
-    {
-        temp.append("369098752");
-    }
-    temp.replace(' ','\0');
-    temp.replace("X"," ");
-    temp.append('\0');
-    return temp;
+    return Packet;
 
 }

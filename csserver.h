@@ -13,7 +13,7 @@ public:
     QString *_return;
     bool ServerConnect(int port, QString ip, QString rcon);
     bool sendCommand(QString command);
-    QByteArray makePacket(int type, QString command,bool rcon);
+    QByteArray makePacket(int type, QString command);
 
 signals:
 
