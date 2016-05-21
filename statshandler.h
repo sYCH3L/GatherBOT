@@ -58,7 +58,6 @@ protected:
     bool checkConnect(QString vauth, QString vname,int port, QString ip, QString rcon);
     bool sendCommandCheck(QString vauth,QString vname,QString cmd1);
     bool selectServer(QString vauth, QString vname, int idz);
-    bool giveAuth(QString vauth, QString vname);
     bool checkSteamid(QString vauth, QString vname);
     bool closeGame(QString vauth, QString vname, int gnumber);
     bool showInfo(QString vauth, QString vname, int gnumber);
@@ -69,7 +68,6 @@ protected:
     QString checkStatus(int gnumber);
     QString checkCT(int gnumber);
     QString checkT(int gnumber);
-    QString generator();
     QString findAuth(QString vauth, QString vname, QString name);
 private:
     int reg;
