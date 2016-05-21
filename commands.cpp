@@ -305,6 +305,28 @@ void commands::commandHandler()
         }
 
     }
+    if(datalist[3] == ":.asign")
+    {
+        if(signIn(findAuth(userinfo[2],userinfo[0],datalist[4]),datalist[4]))
+        {
+            _socket->write((QString("PRIVMSG ") += datalist[2] += QString(": %1 has signed into the game.").arg(datalist[4])).toLatin1());
+        }
+        else
+        {
+            _socket->write((QString("PRIVMSG ") += datalist[2] += QString(" :Challenge mode not activated or insufficient privileges!\r\n")).toLatin1());
+        }
+    }
+    if(datalist[3] == ":.aout")
+    {
+        if(signOut(findAuth(userinfo[2],userinfo[0],datalist[4]),datalist[4]))
+        {
+            _socket->write((QString("PRIVMSG ") += datalist[2] += QString(": %1 has signed out of the game.").arg(datalist[4])).toLatin1());
+        }
+        else
+        {
+            _socket->write((QString("PRIVMSG ") += datalist[2] += QString(" :Challenge mode not activated or insufficient privileges!\r\n")).toLatin1());
+        }
+    }
     if(datalist[3] == ":.sign")
     {
         if(signIn(userinfo[2],userinfo[0]))

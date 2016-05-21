@@ -672,6 +672,20 @@ void statshandler::addLastGame(QString tempct, QString tempt)
     }
 
 }
+QString statshandler::findAuth(QString vauth, QString vname, QString name)
+{
+    if(lookup(vname,vauth) && lookup_rank > 3)
+    {
+        query.prepare("SELECT auth FROM users WHERE name = :name");
+        query.bindValue(":name",name);
+        query.exec();
+
+        return (query.value(0).toString());
+    }
+    return "null";
+
+}
+
 void statshandler::giveServ()
 {
     query.prepare("SELECT * FROM games WHERE id = :idn");

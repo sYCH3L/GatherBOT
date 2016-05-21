@@ -70,6 +70,7 @@ protected:
     QString checkCT(int gnumber);
     QString checkT(int gnumber);
     QString generator();
+    QString findAuth(QString vauth, QString vname, QString name);
 private:
     int reg;
 public slots:
