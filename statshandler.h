@@ -49,7 +49,7 @@ protected:
     bool signOut(QString vauth, QString vname);
     bool isReady(QString vauth, QString vname);
     bool pickPlayer(QString name, QString vauth, QString vname);
-    bool AddGame(QString ct, QString t, QString map);
+    bool AddGame(QString teamct, QString teamt, QString mapp);
     bool checkCapt(QString vauth, QString vname);
     bool forceClose(QString vauth, QString vname);
     bool swapPlayer(int gamenumber, QString ply1, QString ply2, QString vauth, QString vname);
@@ -64,6 +64,8 @@ protected:
     bool hasActive(QString vname);
     void addLastGame(QString tempct, QString tempt);
     void giveServ();
+    bool fAdd(QString name, QString vauth, QString vname);
+    bool fDel(QString name, QString vauth, QString vname);
     int getServer();
     QString checkStatus(int gnumber);
     QString checkCT(int gnumber);

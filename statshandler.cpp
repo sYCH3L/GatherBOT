@@ -39,7 +39,6 @@ statshandler::statshandler()
 
     query = QSqlQuery(db);
 
-
     query.prepare("SELECT COUNT(*) AS g FROM games");
 
     query.exec();
@@ -148,7 +147,7 @@ bool statshandler::selectServer(QString vauth, QString vname, int idz)
 bool statshandler::swapPlayer(int gamenumber, QString ply1, QString ply2, QString vauth, QString vname)
 {
     qDebug() << gamenumber;
-    if(checkGame(gamenumber) && isUser(ply1) && isUser(ply2) && lookup(vname, vauth) && lookup_rank > 2 && hasActive(ply2))
+    if(checkGame(gamenumber) && isUser(ply1) && isUser(ply2) && lookup(vname, vauth) && lookup_rank > 2 && !hasActive(ply2))
     {
         query.prepare("SELECT * FROM games WHERE id = :idz AND status = :stz");
         query.bindValue(":idz", gamenumber);
@@ -197,38 +196,29 @@ int statshandler::getServer()
     query.prepare("SELECT * FROM servers WHERE usable = :us");
     query.bindValue(":us","yes");
 
-    if(!query.exec())
-    {
-        return -1;
-    }
-
-    int fieldNo = query.record().indexOf("id");
-    int id = query.value(fieldNo).toInt();
-
+    query.exec();
+    query.next();
+    int id = query.value(query.record().indexOf("id")).toInt();
+    qDebug() << id;
     return id;
 }
 
 
-bool statshandler::AddGame(QString ct, QString t, QString map)
+bool statshandler::AddGame(QString teamct, QString teamt, QString mapp)
 {
     gamecounter++;
-    query.prepare("INSERT INTO games (id, map, CT, T, server_ID) "
-                  "VALUES (:id, :map, :ct, :t, :sid)");
+    query.prepare("INSERT INTO games (id, CT, T, map, server_ID) "
+                          "VALUES (:id, :ct, :t, :map, :sid)");
     query.bindValue(":id",gamecounter);
-    query.bindValue(":map",map);
-    query.bindValue(":ct",ct);
-    query.bindValue(":t",t);
+    query.bindValue(":ct",teamct);
+    query.bindValue(":t",teamt);
+    query.bindValue(":map",mapp);
     int id = getServer();
-    if(id == -1)
-    {
-        return false;
-    }
+    if(id==0){return false;}
     query.bindValue(":sid",id);
-    if(query.exec())
-    {
-        return true;
-    }
-    return false;
+    bool ok = query.exec();
+    qDebug() << query.lastError().text() << "Executed:" << ok;
+    return true;
 
 }
 
@@ -241,6 +231,7 @@ bool statshandler::pickPlayer(QString name, QString vauth, QString vname)
         if(a == vname)
         {
             CT.append(name);
+            qDebug() << CT;
             playerList.removeOne(name);
             pturn = b;
             return true;
@@ -248,13 +239,9 @@ bool statshandler::pickPlayer(QString name, QString vauth, QString vname)
         else if(b == vname)
         {
             T.append(name);
+            qDebug() << T;
             playerList.removeOne(name);
             pturn = a;
-            return true;
-        }
-        else if(CT.count() > 4 && T.count() > 4)
-        {
-            //game starting
             return true;
         }
     }
@@ -299,7 +286,7 @@ bool statshandler::isReady(QString vauth, QString vname)
 
 bool statshandler::startGame(QString ss, QString vauth, QString vname)
 {
-    if(lookup(vname, vauth) && lookup_rank > 0 && isUser(ss) && pr_rank > 0 && game_started == false && hasActive(ss) && hasActive(vname))
+    if(lookup(vname, vauth) && lookup_rank > 0 && isUser(ss) && pr_rank > 0 && game_started == false && !hasActive(ss) && !hasActive(vname) && ss != vname && getServer() != 0)
     {
         //starting gamemode competive
         capt2_ac = false;
@@ -312,10 +299,30 @@ bool statshandler::startGame(QString ss, QString vauth, QString vname)
     return false;
 
 }
+bool statshandler::fDel(QString name, QString vauth, QString vname)
+{
+    if(lookup(vname,vauth) && lookup_rank > 4 && playerList.contains(name))
+    {
+        playerList.removeOne(name);
+        return true;
+    }
+    return false;
+}
+
+bool statshandler::fAdd(QString name, QString vauth, QString vname)
+{
+    if(lookup(vname,vauth) && lookup_rank > 4)
+    {
+        playerList.append(name);
+        return true;
+    }
+    return false;
+}
+
 bool statshandler::signIn(QString vauth, QString vname)
 {
     if(lookup(vname, vauth) && lookup_rank > 0 && game_started == true
-            && map_picked == true && playerList.contains(vname) == false && pick_stage == false && hasActive(vname))
+            && map_picked == true && playerList.contains(vname) == false && pick_stage == false && !hasActive(vname))
     {
         playerList.append(vname);
         return true;
@@ -325,7 +332,7 @@ bool statshandler::signIn(QString vauth, QString vname)
 bool statshandler::signOut(QString vauth, QString vname)
 {
     if(lookup(vname, vauth) && lookup_rank > 0 && game_started == true
-            && map_picked == true && playerList.contains(vname) == false && pick_stage == false)
+            && map_picked == true && playerList.contains(vname) == true && pick_stage == false)
     {
         playerList.removeOne(vname);
         return true;
@@ -484,6 +491,7 @@ bool statshandler::isUser(QString name)
 
         return true;
     }
+    qDebug() << "isUser failed for " << name;
     return false;
 
 }
@@ -591,19 +599,20 @@ QString statshandler::checkStatus(int gnumber)
     query.prepare("SELECT * FROM games WHERE id = :idn");
     query.bindValue(":idn", gnumber);
     query.exec();
-    query.next();
-
-    int no = query.record().indexOf("gstatus");
-    qDebug() << "Index of gstatus" << no;
-    QString g = query.value(no).toString();
-
-    if(g == "NULL")
+    if(query.next())
     {
-        g.clear();
-        g.append("No Result");
-    }
 
-    return g;
+        QString g = query.value(query.record().indexOf("gstatus")).toString();
+        qDebug() << "value of g" << g;
+
+        if(g == "NULL")
+        {
+            g.clear();
+            g.append("No Result");
+        }
+        return g;
+    }
+    return "game not found";
 }
 bool statshandler::hasActive(QString vname)
 {
@@ -615,11 +624,22 @@ bool statshandler::hasActive(QString vname)
     int no = query.record().indexOf("lastgame");
     int g = query.value(no).toInt();
 
-    if(checkStatus(g) != "NULL")
+    if(g == 0)
     {
         return false;
     }
-    return true;
+    QString temp = checkStatus(g);
+    if(temp == "game not found")
+    {
+        qDebug() << "HasActive failed for:" << vname;
+        return false;
+    }
+    else if(temp != "No Result")
+    {
+        qDebug() << "HasActive failed for:" << vname;
+        return true;
+    }
+    return false;
 }
 
 void statshandler::addLastGame(QString tempct, QString tempt)
@@ -630,17 +650,20 @@ void statshandler::addLastGame(QString tempct, QString tempt)
     QStringList ulist = tempct.split(" ");
     QStringList ulist2 = tempt.split(" ");
 
+    QString temp;
     query.prepare("UPDATE users SET lastgame=:dd WHERE name = :name");
 
-    for(int i = 0; i < tempct.size(); i++ )
+    for(int i = 0; i < ulist.size(); i++ )
     {
-        query.bindValue(":name",ulist[i]);
+        temp = ulist[i];
+        query.bindValue(":name",temp);
         query.bindValue(":dd",gamecounter);
         query.exec();
     }
-    for(int i = 0; i < tempt.size(); i++ )
+    for(int i = 0; i < ulist2.size(); i++ )
     {
-        query.bindValue(":name",ulist2[i]);
+        temp = ulist2[i];
+        query.bindValue(":name",temp);
         query.bindValue(":dd",gamecounter);
         query.exec();
     }
@@ -653,8 +676,9 @@ QString statshandler::findAuth(QString vauth, QString vname, QString name)
         query.prepare("SELECT auth FROM users WHERE name = :name");
         query.bindValue(":name",name);
         query.exec();
+        query.next();
 
-        return (query.value(0).toString());
+        return (query.value(query.record().indexOf("auth")).toString());
     }
     return "null";
 
@@ -665,24 +689,23 @@ void statshandler::giveServ()
     query.prepare("SELECT * FROM games WHERE id = :idn");
     query.bindValue(":idn",gamecounter);
     query.exec();
+    query.next();
 
-    int fieldNo = query.record().indexOf("server_ID");
-    int adc = query.value(fieldNo).toInt();
+    int adc = query.value(query.record().indexOf("server_ID")).toInt();
 
     query.prepare("SELECT * FROM servers WHERE id = :idzz");
     query.bindValue(":idzz",adc);
     query.exec();
+    query.next();
 
-    int fieldSec = query.record().indexOf("ip");
-    ip = query.value(fieldSec).toString();
+    ip = query.value(query.record().indexOf("ip")).toString();
 
-    int fieldTre = query.record().indexOf("port");
-    port = query.value(fieldTre).toInt();
+    port = query.value(query.record().indexOf("port")).toInt();
 
 
     query.prepare("UPDATE servers SET usable=:no WHERE id=:idz");
     query.bindValue(":no","no");
-    query.bindValue(":idz",gamecounter);
+    query.bindValue(":idz",adc);
     query.exec();
 
 }

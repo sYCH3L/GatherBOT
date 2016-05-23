@@ -24,6 +24,7 @@ signals:
 
 protected:
     void commandHandler();
+    void socketHandler(QString data);
     QTcpSocket *_socket;
     QString *_string;
     QTimer* _timer;
