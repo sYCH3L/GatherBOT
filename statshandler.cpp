@@ -38,6 +38,7 @@ statshandler::statshandler()
     qDebug("MySQL Connection was successful");
 
     query = QSqlQuery(db);
+    query_g = QSqlQuery(db);
 
     query.prepare("SELECT COUNT(*) AS g FROM games");
 
@@ -207,17 +208,17 @@ int statshandler::getServer()
 bool statshandler::AddGame(QString teamct, QString teamt, QString mapp)
 {
     gamecounter++;
-    query.prepare("INSERT INTO games (id, CT, T, map, server_ID) "
-                          "VALUES (:id, :ct, :t, :map, :sid)");
-    query.bindValue(":id",gamecounter);
-    query.bindValue(":ct",teamct);
-    query.bindValue(":t",teamt);
-    query.bindValue(":map",mapp);
+    query_g.prepare("INSERT INTO games (id, CT, T, map, server_ID) "
+                    "VALUES (:id, :ct, :t, :map, :sid)");
+    query_g.bindValue(":id",gamecounter);
+    query_g.bindValue(":ct",teamct);
+    query_g.bindValue(":t",teamt);
+    query_g.bindValue(":map",mapp);
     int id = getServer();
     if(id==0){return false;}
-    query.bindValue(":sid",id);
-    bool ok = query.exec();
-    qDebug() << query.lastError().text() << "Executed:" << ok;
+    query_g.bindValue(":sid",id);
+    bool ok = query_g.exec();
+    qDebug() << query_g.lastError().text() << "Executed:" << ok;
     return true;
 
 }

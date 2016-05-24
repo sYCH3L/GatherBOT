@@ -164,16 +164,8 @@ void commands::commandHandler()
             socketHandler((QString("PRIVMSG ") += datalist[2] += QString(" :Insufficient privileges or servernumber false!\r\n")).toLatin1());
         }
     }
-    if(datalist[3] == ":.fc")
-    {
-        QString ctt = "player1,player3,player5,player,7,player9";
-        QString tt = "player2,player4,player6,player8,player10";
-        QString map = "de_whogivesafuck";
-        AddGame(ctt,tt,map);
-    }
     if(datalist[3] == ":.games")
     {
-        QString templist = gamelist;
         if(gamesList(userinfo[2],userinfo[0]))
         {
             if(gamelist.isEmpty())
@@ -182,6 +174,7 @@ void commands::commandHandler()
             }
             else
             {
+                QString templist = gamelist;
                 socketHandler((QString("PRIVMSG ") += datalist[2] += QString(" :Games going on right now: %1 \r\n").arg(templist)).toLatin1());
 
             }
@@ -239,7 +232,7 @@ void commands::commandHandler()
                     tempt += T.at(i);
                     tempt += ",";
                 }
-                socketHandler((QString("PRIVMSG ") += datalist[2] += QString(" :The teams have been chosen!\r\n CT:%1 \r\n T:%2 \r\n Map:%3").arg(tempct).arg(tempt).arg(m)).toLatin1());
+                socketHandler((QString("PRIVMSG ") += datalist[2] += QString(" :The teams have been chosen! CT:%1  T:%2  Map:%3 \rn\n").arg(tempct).arg(tempt).arg(m)).toLatin1());
                 if(AddGame(tempct,tempt,m))
                 {
                     this->CloseCl();
@@ -254,11 +247,11 @@ void commands::commandHandler()
 
                     for(int i = 0; i < ulist.size(); i++ )
                     {
-                        socketHandler((QString("PRIVMSG ") += ulist[i] += QString(" :Server for the game: %1:%2").arg(ip).arg(port)).toLatin1());
+                        socketHandler((QString("PRIVMSG ") += ulist[i] += QString(" :Server for the game: %1:%2\r\n").arg(ip).arg(port)).toLatin1());
                     }
                     for(int i = 0; i < ulist2.size(); i++ )
                     {
-                        socketHandler((QString("PRIVMSG ") += ulist2[i] += QString(" :Server for the game: %1:%2").arg(ip).arg(port)).toLatin1());
+                        socketHandler((QString("PRIVMSG ") += ulist2[i] += QString(" :Server for the game: %1:%2\r\n").arg(ip).arg(port)).toLatin1());
                     }
 
                 }

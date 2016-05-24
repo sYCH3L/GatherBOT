@@ -17,7 +17,7 @@ public:
     virtual ~statshandler();
     QSqlDatabase db;
 
-    QSqlQuery query;
+    QSqlQuery query,query_g;
 
     int lookup_rank, user_rank, pr_rank, rank, nrank, elo, wins, loses, sec, gamecounter, port;
 
