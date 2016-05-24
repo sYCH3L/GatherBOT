@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: sql2.freemysqlhosting.net
--- Loomise aeg: Mai 18, 2016 kell 03:44 PM
+-- Loomise aeg: Mai 24, 2016 kell 06:44 PM
 -- Serveri versioon: 5.5.49-0ubuntu0.12.04.1
 -- PHP versioon: 5.3.28
 
@@ -28,21 +28,14 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `games` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `status` varchar(150) NOT NULL,
+  `status` varchar(150) NOT NULL DEFAULT 'open',
   `CT` varchar(150) NOT NULL,
   `T` varchar(150) NOT NULL,
   `map` varchar(150) NOT NULL,
   `gstatus` varchar(150) NOT NULL DEFAULT 'NULL',
   `server_ID` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
---
--- Andmete tõmmistamine tabelile `games`
---
-
-INSERT INTO `games` (`id`, `status`, `CT`, `T`, `map`, `gstatus`, `server_ID`) VALUES
-(1, 'closed', 'NULL', 'NULL', 'de_null', 'NULL', 0);
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -85,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `servers` (
 --
 
 INSERT INTO `servers` (`id`, `ip`, `port`, `rcon`, `usable`) VALUES
-(1, '127.0.0.1', 27015, 'pede', 'yes');
+(1, '127.0.0.1', 27015, 'pede', 'no');
 
 -- --------------------------------------------------------
 
@@ -105,15 +98,27 @@ CREATE TABLE IF NOT EXISTS `users` (
   `authkey` varchar(150) NOT NULL,
   `lastgame` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Andmete tõmmistamine tabelile `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `auth`, `rank`, `rating`, `wins`, `loses`, `steamid`, `authkey`, `lastgame`) VALUES
-(1, 'sYCH3L', 'Enari', 5, 500, 5, 6, 0, '0', 0),
-(2, 'testikasutaja', 'testikasutaja', 1, 0, 0, 0, 0, '', 0);
+(1, 'sYCH3L', 'Enari', 5, 500, 5, 6, 0, '0', 1),
+(2, 'testikasutaja', 'testikasutaja', 0, 0, 0, 0, 0, '', 0),
+(3, 'pidr', 'pidr', 5, 0, 0, 0, 0, '', 1),
+(4, 'padr', 'padr', 1, 0, 0, 0, 0, '', 2),
+(5, 'player1', 'player1', 1, 0, 0, 0, 0, '', 1),
+(6, 'player2', 'player2', 1, 0, 0, 0, 0, '', 1),
+(7, 'player3', 'player3', 1, 0, 0, 0, 0, '', 1),
+(8, 'player4', 'player4', 1, 0, 0, 0, 0, '', 1),
+(9, 'player5', 'player5', 1, 0, 0, 0, 0, '', 1),
+(10, 'player6', 'player6', 1, 0, 0, 0, 0, '', 1),
+(11, 'player7', 'player7', 1, 0, 0, 0, 0, '', 1),
+(12, 'player8', 'player8', 1, 0, 0, 0, 0, '', 1),
+(14, 'tyrbel', 'tyrbel', 1, 0, 0, 0, 0, '', 1),
+(15, 'player9', 'player9', 1, 0, 0, 0, 0, '', 0);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
