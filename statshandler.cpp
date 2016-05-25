@@ -409,6 +409,10 @@ bool statshandler::demote(QString name, QString vauth, QString vname)
     {
         rank = pr_rank;
         nrank = rank - 1;
+        if(nrank > 0)
+        {
+            return false;
+        }
         query.prepare("UPDATE users SET rank=:newrnk WHERE name = :name");
         query.bindValue(":newrnk",nrank);
         query.bindValue(":name",name);
@@ -420,11 +424,13 @@ bool statshandler::demote(QString name, QString vauth, QString vname)
 
 bool statshandler::promote(QString name, QString vauth, QString vname)
 {
-    if(lookup(vname, vauth) && lookup_rank > 4 && isUser(name) == true)
+    if(lookup(vname, vauth) && lookup_rank > 4 && isUser(name) == true && vname != name)
     {
 
         rank = pr_rank;
         nrank = rank + 1;
+        if(nrank > 5) { return false; }
+        if(nrank > lookup_rank) { return false; }
         query.prepare("UPDATE users SET rank=:newrnk WHERE name = :name");
         query.bindValue(":newrnk",nrank);
         query.bindValue(":name",name);
